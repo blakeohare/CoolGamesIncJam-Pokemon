@@ -1,29 +1,85 @@
 import Game;
 import Graphics2D;
+import ImageResources;
+
+const WIN_WIDTH = 960;
+const WIN_HEIGHT = 600;
 
 function main() {
-	
-	window = new GameWindow("Grandma's Pokemon", 60, 960, 600);
-	
-	mouseLocation = [0, 0];
-	mousePressed = false;
-	
-	count = 10;
-	
+	game = new Main();
 	while (true) {
-		for (event : window.pumpEvents()) {
+		if(game.onGameLoop())
+			return;
+	}
+}
+
+class Main{
+	
+	field window;
+	field mouse;
+	
+	field currentMenu;
+	field startMenu;
+	field characterMenu;
+	field townScreen;
+	
+	field player;
+	field npcs;
+	
+	constructor() {
+		this.window = new GameWindow("Grandma's Pokemon", 60, WIN_WIDTH, WIN_HEIGHT);
+		this.mouse = new Mouse();
+		
+		this.startMenu = new StartMenu(this);
+		this.currentMenu = this.startMenu;
+		this.characterMenu = new CharSelect(this);
+	}
+	
+	function onGameLoop() {
+		if(this.onEvent())
+			return true;
+			
+		this.currentMenu.onGameLoop();		
+
+		this.window.clockTick();
+		return false;
+	}
+	
+	function gotoCharSelect() {
+		this.currentMenu = this.characterMenu;
+	}
+	
+	function gotoTown() {
+		this.currentMenu = this.townScreen;
+	}
+	
+	function setPlayer(id) {
+		this.npcs = [null] * (this.characterMenu.charTextures.length - 1);
+		for(i = 0; i < this.npcs.length; i++) {
+			if(i < id)
+				this.npcs[i] = new Person(this.characterMenu.charTextures[i]);
+			else if(i > id)
+				this.npcs[i - 1] = new Person(this.characterMenu.charTextures[i]);
+		}
+		this.player = new Player(this.characterMenu.charTextures[id]);
+		this.townScreen = new Town(this);
+		this.gotoTown();
+	}
+	
+	function onEvent() {
+		for (event : this.window.pumpEvents()) {
 			switch (event.type) {
 				case EventType.QUIT:
-					return;
+					return true;
 				
 				case EventType.MOUSE_MOVE:
-					mouseLocation[0] = event.x;
-					mouseLocation[1] = event.y;
+					this.mouse.x = event.x;
+					this.mouse.y = event.y;
 					break;
 				
 				case EventType.MOUSE_LEFT_DOWN:
 				case EventType.MOUSE_LEFT_UP:
-					mousePressed = event.down;
+					this.mouse.isDown = event.down;
 					break;
 					
 				default:
@@ -31,14 +87,6 @@ function main() {
 			}
 		}
 		
-		Draw.fill(40, 40, 40);
-		
-		Draw.rectangle(
-			count, 10,  // x y
-			100, 100, // width height
-			255, 0, 0); // RGB
-		count++;
-			
-		window.clockTick();
+		return false;
 	}
 }

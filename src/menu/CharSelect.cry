@@ -1,0 +1,50 @@
+import Graphics2D;
+import ImageResources;
+
+const CHARACTER_SPACING = 80;
+
+class CharSelect {
+	
+	field title;
+	field characters = ["characters/char1.png", "characters/char2.png"];
+	field charTextures;
+	field buttons;
+	field mainMenu;
+	
+	constructor(mainRef) {
+		this.mainMenu = mainRef;
+		
+		this.title = GraphicsTexture.load(ImageLoader.loadFromResources("menu/char_select.png"));
+		
+		this.charTextures = [null] * this.characters.length;
+		this.buttons = [null] * this.characters.length;
+		for(i = 0; i < this.characters.length; i++) {
+			this.charTextures[i] = GraphicsTexture.load(ImageLoader.loadFromResources(this.characters[i]));
+			this.buttons[i] = new Button("menu/char_mouse_up.png", "menu/char_mouse_over.png", "menu/char_mouse_down.png", mainRef.mouse);
+			
+			btn = this.buttons[i];
+			left = WIN_WIDTH / 2 - (this.buttons.length * btn.width + (this.buttons.length - 1) * CHARACTER_SPACING) / 2;
+			btn.center();
+			btn.y += 50;
+			btn.x = left + i * btn.width + i * CHARACTER_SPACING;
+		}
+	}
+	
+	function onGameLoop() {
+		Draw.fill(245, 245, 245);
+		
+		this.title.draw(0, 30);
+		
+		for(i = 0; i < this.charTextures.length; i++) {
+			btn = this.buttons[i];
+			btn.onGameLoop();
+			if(btn.onClick())
+				this.mainMenu.setPlayer(i);
+			
+			texture = this.charTextures[i];
+			texture.draw(btn.x + btn.width / 2 - texture.width / 2, btn.y + btn.height / 2 - texture.height / 2);
+		}
+	}
+	
+	
+}

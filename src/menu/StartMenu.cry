@@ -1,0 +1,27 @@
+import Graphics2D;
+import ImageResources;
+
+class StartMenu {
+
+	field logo;
+	field startBtn;
+	field mainMenu;
+
+	constructor(mainRef) {
+		this.mainMenu = mainRef;
+		this.logo = GraphicsTexture.load(ImageLoader.loadFromResources("menu/logo.png"));
+		this.startBtn = new Button("menu/start.png", "menu/start_over.png",  "menu/start_down.png",mainRef.mouse);
+		this.startBtn.center();
+		this.startBtn.y = 420;
+	}
+
+	function onGameLoop() {
+		Draw.fill(245, 245, 245);
+		
+		this.logo.draw(WIN_WIDTH / 2 - this.logo.width / 2, 80);
+		this.startBtn.onGameLoop();
+		if(this.startBtn.onClick())
+			this.mainMenu.gotoCharSelect();
+	}
+
+}

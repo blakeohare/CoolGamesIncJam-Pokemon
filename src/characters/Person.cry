@@ -1,0 +1,21 @@
+import Graphics2D;
+import ImageResources;
+
+class Person {
+	field texture;
+	
+	field x;
+	field y;
+	field width;
+	field height;
+	
+	constructor(textureRef) {
+		this.texture = textureRef;
+		this.width = textureRef.width;
+		this.height = textureRef.height;
+	}
+	
+	function onGameLoop() {
+		this.texture.draw(this.x, this.y);
+	}
+}

@@ -1,0 +1,5 @@
+class Mouse {
+	field x = 0;
+	field y = 0;
+	field isDown = false;
+}

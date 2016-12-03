@@ -1,0 +1,53 @@
+import Graphics2D;
+import ImageResources;
+
+class Button {
+	field up;
+	field over;
+	field down;
+	field mouse;
+	
+	field x;
+	field y;
+	field width;
+	field height;
+	
+	field mouseWasDown = false;
+	
+	constructor(upSource, overSource, downSource, mouseRef) {
+		this.up = GraphicsTexture.load(ImageLoader.loadFromResources(upSource));
+		this.over = GraphicsTexture.load(ImageLoader.loadFromResources(overSource));
+		this.down = GraphicsTexture.load(ImageLoader.loadFromResources(downSource));
+		this.width = this.up.width;
+		this.height = this.up.height;
+		this.mouse = mouseRef;
+	}
+	
+	function onClick() {
+		if(this.mouseWasDown && !this.mouse.isDown){
+			this.mouseWasDown = false;
+			return true;
+		}
+		return false;
+	}
+	
+	function onGameLoop() {
+		if(this.isMouseOver())
+			if(this.mouse.isDown){
+				this.down.draw(this.x, this.y);
+				this.mouseWasDown = true;
+			}else
+				this.over.draw(this.x, this.y);
+		else
+			this.up.draw(this.x, this.y);
+	}
+	
+	function center() {
+		this.x = WIN_WIDTH / 2 - this.up.width / 2;
+		this.y = WIN_HEIGHT / 2 - this.up.height / 2;
+	}
+	
+	function isMouseOver() {
+		return this.mouse.x >= this.x && this.mouse.x < this.x + this.up.width && this.mouse.y >= this.y && this.mouse.y < this.y + this.up.height;
+	}
+}

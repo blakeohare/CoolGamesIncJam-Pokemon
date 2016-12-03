@@ -1,0 +1,39 @@
+import Graphics2D;
+import ImageResources;
+
+const PLAYER_START_X = 30;
+const PLAYER_START_Y = 150;
+
+class Town {
+	
+	field mainMenu;
+	field mouse;
+	field player;
+	field bg;
+	field x = 0;
+	field y = 0;
+	
+	field wasMouseDown = false;
+	
+	constructor(mainRef) {
+		this.mainMenu = mainRef;
+		this.mouse = mainRef.mouse;
+		this.player = mainRef.player;
+		this.player.x = PLAYER_START_X;
+		this.player.y = PLAYER_START_Y;
+		this.bg = GraphicsTexture.load(ImageLoader.loadFromResources("town/town.png"));
+	}
+	
+	function onGameLoop() {
+		Draw.fill(245, 245, 245);
+		
+		if(!this.mouse.isDown && this.wasMouseDown) {
+			this.player.goto(this.mouse.x, this.mouse.y);
+		}
+		
+		this.bg.draw(this.x, this.y);
+		this.player.onGameLoop();
+		
+		this.wasMouseDown = this.mouse.isDown;
+	}
+}

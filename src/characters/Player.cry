@@ -1,0 +1,24 @@
+class Player : Person {
+
+	field gotoX;
+	field gotoY;
+	field isGoTo = false;
+
+	constructor(textureRef) : base(textureRef) {
+		
+	}
+	
+	function goto(_x, _y) {
+		this.isGoTo = true;
+		this.gotoX = _x - this.width / 2;
+		this.gotoY = _y - this.height / 2;
+	}
+	
+	function onGameLoop() {
+		base.onGameLoop();
+		if(this.isGoTo) {
+			this.x++;
+			this.y++;
+		}
+	}
+}
