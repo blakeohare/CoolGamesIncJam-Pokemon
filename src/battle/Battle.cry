@@ -1,5 +1,7 @@
 import Graphics2D;
+import ImageResources;
 import Math;
+import Audio;
 
 const POKE_SPACING = 40;
 const HEALTH_HEIGHT = 40;
@@ -8,12 +10,28 @@ const HEALTH_BORDER = 4;
 
 class Battle {
 	
-	field player1;
-	field player2;
+	field mainMenu;
+	field mouse;
+	field wasMouseDown = false;
 	
-	constructor(p1, p2) {
+	field player1;
+	field p1Hit;
+	field p1Attack;
+	field player2;
+	field p2Hit;
+	
+	field hint1;
+	
+	field sound_hit;
+	
+	constructor(p1, p2, mainRef) {
 		this.player1 = p1;
 		this.player2 = p2;
+		this.hint1 = GraphicsTexture.load(ImageLoader.loadFromResources("battle/hint1.png"));
+		this.mainMenu = mainRef;
+		this.mouse = mainRef.mouse;
+		
+		this.sound_hit = Audio.SoundResource.loadFromResource("audio/SuccessfulAttack.ogg");
 	}
 	
 	function onGameLoop() {
@@ -21,17 +39,52 @@ class Battle {
 		
 		this.player1.texture.draw(0, WIN_HEIGHT - this.player1.texture.height);
 		this.drawPokemonList(this.player1, false);
-		mon = this.player1.pokelist[0];
+		mon = this.player1.activePkm;
 		tx = mon.texture_right;
-		tx.draw(POKE_SPACING, WIN_HEIGHT - this.player1.height - POKE_SPACING - tx.height);
+		this.p1Hit = new HitBox(POKE_SPACING, WIN_HEIGHT - this.player1.height - POKE_SPACING - tx.height, tx.width, tx.height);
+		tx.draw(this.p1Hit.left, this.p1Hit.top);
 		this.drawHealth(mon.damage, mon.health, false, this.player1.height);
 		
 		this.player2.texture.draw(WIN_WIDTH - this.player1.texture.height, 0);
 		this.drawPokemonList(this.player2, true);
-		mon = this.player2.pokelist[0];
+		mon = this.player2.activePkm;
 		tx = mon.texture_left;
-		tx.draw(WIN_WIDTH - POKE_SPACING - tx.width, this.player1.height + POKE_SPACING);
+		right = WIN_WIDTH - POKE_SPACING;
+		top = this.player1.height + POKE_SPACING;
+		this.p2Hit = new HitBox(right - tx.width, top, tx.width, tx.height);
+		tx.draw(this.p2Hit.left, this.p2Hit.top);
 		this.drawHealth(mon.damage, mon.health, true, this.player2.height);
+		
+		ignoreClick = false;
+		if(this.p1Attack != null) {
+			this.p1Attack.onGameLoop();
+			if(this.p1Attack.onClick())
+				ignoreClick = true;
+			if(this.p1Attack.mover.isGoTo == false) {
+				if(this.p1Attack.charged)
+					mon.damage += 40;
+				else
+					mon.damage += 20;
+				this.sound_hit.play();
+				this.p1Attack = null;
+			}
+		}
+		
+		if(!this.mouse.isDown && this.wasMouseDown && !ignoreClick) {
+			if(this.p2Hit.isClicked(this.mouse.x, this.mouse.y)) {
+				this.hint1 = null;
+				this.p1Attack = new Attack1("battle/attack1.png", "battle/attack1_over.png", "battle/attack1_down.png", this.mouse);
+				this.p1Attack.x = this.p1Hit.centerX;
+				this.p1Attack.y = this.p1Hit.centerY;
+				this.p1Attack.goto(this.p2Hit.centerX, this.p2Hit.centerY);
+			}
+		}
+		
+		if(this.hint1 != null) {
+			this.hint1.draw(right - this.hint1.width, top + tx.height);
+		}
+		
+		this.wasMouseDown = this.mouse.isDown;
 	}
 	
 	function drawPokemonList(player, isTop) {
@@ -42,13 +95,15 @@ class Battle {
 			y = 0;
 		}
 		for(i = 0; i < player.pokecount; i++) {
-			tx = player.pokelist[i].icon;
-			if(isTop) {
-				tx.draw(x - tx.width, y);
-				x -= tx.width + POKE_SPACING;
-			} else {
-				tx.draw(x, y - tx.height);
-				x += tx.width + POKE_SPACING;
+			if(player.activePkm != player.pokelist[i]) {
+				tx = player.pokelist[i].icon;
+				if(isTop) {
+					tx.draw(x - tx.width, y);
+					x -= tx.width + POKE_SPACING;
+				} else {
+					tx.draw(x, y - tx.height);
+					x += tx.width + POKE_SPACING;
+				}
 			}
 		}
 	}

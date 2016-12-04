@@ -1,0 +1,25 @@
+const ATTACK_SPEED = 4;
+
+class Attack1 : Button {
+
+	field mover;
+	field charged = false;
+
+	constructor(upSource, overSource, downSource, mouseRef) : base(upSource, overSource, downSource, mouseRef) {
+		this.mover = new MoveMe(this, ATTACK_SPEED);
+	}
+	
+	function goto(_x, _y) {
+		this.mover.goto(_x, _y);
+	}
+	
+	function onGameLoop() {
+		base.onGameLoop();
+		this.mover.onGameLoop();
+		if(this.onClick(false)) {
+			this.charged = true;
+			this.up = this.down;
+			this.over = this.down;
+		}
+	}
+}

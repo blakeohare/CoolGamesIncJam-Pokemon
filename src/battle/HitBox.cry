@@ -1,0 +1,21 @@
+class HitBox {
+	field left;
+	field top;
+	field right;
+	field bottom;
+	field centerX;
+	field centerY;
+	
+	constructor(x, y, width, height) {
+		this.left = x;
+		this.right = x + width;
+		this.top = y;
+		this.bottom = y + height;
+		this.centerX = x + width / 2;
+		this.centerY = y + height / 2;
+	}
+	
+	function isClicked(x, y) {
+		return x > this.left && x < this.right && y > this.top && y < this.bottom;
+	}
+}

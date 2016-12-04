@@ -57,7 +57,7 @@ class Main{
 	}
 	
 	function gotoBattle(p1, p2) {
-		this.battleScreen = new Battle(p1, p2);
+		this.battleScreen = new Battle(p1, p2, this);
 		this.currentMenu = this.battleScreen;
 	}
 	

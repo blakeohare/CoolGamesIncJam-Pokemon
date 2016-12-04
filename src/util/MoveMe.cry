@@ -1,0 +1,37 @@
+import Math;
+
+class MoveMe {
+
+	field target;
+	field speed;
+	field gotoX;
+	field gotoY;
+	field isGoTo = false;
+	
+	constructor(myTarget, mySpeed) {
+		this.target = myTarget;
+		this.speed = mySpeed;
+	}
+	
+	function goto(_x, _y) {
+		this.isGoTo = true;
+		this.gotoX = _x - this.target.width / 2;
+		this.gotoY = _y - this.target.height / 2;
+	}
+	
+	function onGameLoop() {
+		if(this.isGoTo) {
+			distance = ((this.gotoX - this.target.x) ** 2 + (this.gotoY - this.target.y) ** 2) ** 0.5;
+			if(distance <= this.speed / 2)
+				this.isGoTo = false;
+			else {
+				angle = Math.arctan(this.gotoY - this.target.y, this.gotoX - this.target.x);
+				stepY = Math.sin(angle) * this.speed;
+				stepX = Math.cos(angle) * this.speed;
+				
+				this.target.x += stepX;
+				this.target.y += stepY;
+			}
+		}
+	}
+}

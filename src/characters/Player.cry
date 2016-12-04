@@ -1,37 +1,19 @@
-import Math;
-
 const WALK_SPEED = 2.5;
 
 class Player : Person {
 
-	field gotoX;
-	field gotoY;
-	field isGoTo = false;
+	field mover;
 
 	constructor(textureRef) : base(textureRef) {
-		
+		this.mover = new MoveMe(this, WALK_SPEED);
 	}
 	
 	function goto(_x, _y) {
-		this.isGoTo = true;
-		this.gotoX = _x - this.width / 2;
-		this.gotoY = _y - this.height / 2;
+		this.mover.goto(_x, _y);
 	}
 	
 	function onGameLoop(offX = 0, offY = 0) {
 		base.onGameLoop(offX, offY);
-		if(this.isGoTo) {
-			distance = ((this.gotoX - this.x) ** 2 + (this.gotoY - this.y) ** 2) ** 0.5;
-			if(distance <= WALK_SPEED / 2)
-				this.isGoTo = false;
-			else {
-				angle = Math.arctan(this.gotoY - this.y, this.gotoX - this.x);
-				stepY = Math.sin(angle) * WALK_SPEED;
-				stepX = Math.cos(angle) * WALK_SPEED;
-				
-				this.x += stepX;
-				this.y += stepY;
-			}
-		}
+		this.mover.onGameLoop();
 	}
 }

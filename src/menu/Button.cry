@@ -23,9 +23,10 @@ class Button {
 		this.mouse = mouseRef;
 	}
 	
-	function onClick() {
+	function onClick(clear = true) {
 		if(this.mouseWasDown && !this.mouse.isDown){
-			this.mouseWasDown = false;
+			if(clear)
+				this.mouseWasDown = false;
 			return true;
 		}
 		return false;
