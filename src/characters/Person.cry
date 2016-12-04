@@ -1,6 +1,8 @@
 import Graphics2D;
 import ImageResources;
 
+const MAX_POKEMON = 6;
+
 class Person {
 	field texture;
 	
@@ -9,13 +11,44 @@ class Person {
 	field width;
 	field height;
 	
-	constructor(textureRef) {
+	field pokelist;
+	field pokecount = 0;
+	
+	constructor(textureRef, pkm = null) {
 		this.texture = textureRef;
 		this.width = textureRef.width;
 		this.height = textureRef.height;
+		this.pokelist = [null] * MAX_POKEMON;
+		
+		if(pkm != null) {
+			this.addPokemon(pkm.getPokemon(0));
+			this.addPokemon(pkm.getPokemon(0));
+			this.addPokemon(pkm.getPokemon(0));
+			this.addPokemon(pkm.getPokemon(0));
+		}
 	}
 	
-	function onGameLoop() {
-		this.texture.draw(this.x, this.y);
+	function onGameLoop(offX = 0, offY = 0) {
+		this.texture.draw(this.x + offX, this.y + offY);
+	}
+	
+	function intersects(other) {
+		return (
+					(this.x > other.x && this.x < other.x + other.width)
+					|| (this.x + this.width > other.x && this.x + this.width < other.x + other.width)
+				) && (
+					(this.y > other.y && this.y < other.y + other.height)
+					|| (this.y + this.height > other.y && this.y + this.height < other.y + other.height)
+				);
+	}
+	
+	function addPokemon(pkm) {
+		for(i = 0; i < this.pokelist.length; i++) {
+			if(this.pokelist[i] == null) {
+				this.pokelist[i] = pkm;
+				this.pokecount++;
+				return;
+			}
+		}
 	}
 }

@@ -17,11 +17,13 @@ class Main{
 	
 	field window;
 	field mouse;
+	field pkm;
 	
 	field currentMenu;
 	field startMenu;
 	field characterMenu;
 	field townScreen;
+	field battleScreen;
 	
 	field player;
 	field npcs;
@@ -29,6 +31,7 @@ class Main{
 	constructor() {
 		this.window = new GameWindow("Grandma's Pokemon", 60, WIN_WIDTH, WIN_HEIGHT);
 		this.mouse = new Mouse();
+		this.pkm = new PokeManager();
 		
 		this.startMenu = new StartMenu(this);
 		this.currentMenu = this.startMenu;
@@ -53,15 +56,23 @@ class Main{
 		this.currentMenu = this.townScreen;
 	}
 	
+	function gotoBattle(p1, p2) {
+		this.battleScreen = new Battle(p1, p2);
+		this.currentMenu = this.battleScreen;
+	}
+	
 	function setPlayer(id) {
-		this.npcs = [null] * (this.characterMenu.charTextures.length - 1);
-		for(i = 0; i < this.npcs.length; i++) {
+		len = this.characterMenu.charTextures.length - 1;
+		this.npcs = [null] * len;
+		for(i = 0; i < len + 1; i++) {
 			if(i < id)
-				this.npcs[i] = new Person(this.characterMenu.charTextures[i]);
+				this.npcs[i] = new Person(this.characterMenu.charTextures[i], this.pkm);
 			else if(i > id)
-				this.npcs[i - 1] = new Person(this.characterMenu.charTextures[i]);
+				this.npcs[i - 1] = new Person(this.characterMenu.charTextures[i], this.pkm);
 		}
 		this.player = new Player(this.characterMenu.charTextures[id]);
+		this.player.addPokemon(this.pkm.getPokemon(0));
+		this.player.addPokemon(this.pkm.getPokemon(0));
 		this.townScreen = new Town(this);
 		this.gotoTown();
 	}

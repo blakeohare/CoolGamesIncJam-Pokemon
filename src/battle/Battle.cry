@@ -1,0 +1,67 @@
+import Graphics2D;
+import Math;
+
+const POKE_SPACING = 40;
+const HEALTH_HEIGHT = 40;
+const HEALTH_WIDTH = 200;
+const HEALTH_BORDER = 4;
+
+class Battle {
+	
+	field player1;
+	field player2;
+	
+	constructor(p1, p2) {
+		this.player1 = p1;
+		this.player2 = p2;
+	}
+	
+	function onGameLoop() {
+		Draw.fill(245, 245, 245);
+		
+		this.player1.texture.draw(0, WIN_HEIGHT - this.player1.texture.height);
+		this.drawPokemonList(this.player1, false);
+		mon = this.player1.pokelist[0];
+		tx = mon.texture_right;
+		tx.draw(POKE_SPACING, WIN_HEIGHT - this.player1.height - POKE_SPACING - tx.height);
+		this.drawHealth(mon.damage, mon.health, false, this.player1.height);
+		
+		this.player2.texture.draw(WIN_WIDTH - this.player1.texture.height, 0);
+		this.drawPokemonList(this.player2, true);
+		mon = this.player2.pokelist[0];
+		tx = mon.texture_left;
+		tx.draw(WIN_WIDTH - POKE_SPACING - tx.width, this.player1.height + POKE_SPACING);
+		this.drawHealth(mon.damage, mon.health, true, this.player2.height);
+	}
+	
+	function drawPokemonList(player, isTop) {
+		x = player.width + POKE_SPACING;
+		y = WIN_HEIGHT;
+		if(isTop) {
+			x = WIN_WIDTH - x;
+			y = 0;
+		}
+		for(i = 0; i < player.pokecount; i++) {
+			tx = player.pokelist[i].icon;
+			if(isTop) {
+				tx.draw(x - tx.width, y);
+				x -= tx.width + POKE_SPACING;
+			} else {
+				tx.draw(x, y - tx.height);
+				x += tx.width + POKE_SPACING;
+			}
+		}
+	}
+	
+	function drawHealth(damage, maxHealth, isTop, playerHeight) {
+		x = POKE_SPACING * 2;
+		y = WIN_HEIGHT - playerHeight - HEALTH_HEIGHT;
+		if(isTop) {
+			x = WIN_WIDTH - x - HEALTH_WIDTH;
+			y = playerHeight;
+		}
+		
+		Draw.rectangle(x, y, HEALTH_WIDTH, HEALTH_HEIGHT, 0, 0, 0);
+		Draw.rectangle(x + HEALTH_BORDER, y + HEALTH_BORDER, (HEALTH_WIDTH - HEALTH_BORDER * 2) * Math.max(maxHealth - damage, 0) / maxHealth, HEALTH_HEIGHT - HEALTH_BORDER * 2, 255, 255, 255);
+	}
+}

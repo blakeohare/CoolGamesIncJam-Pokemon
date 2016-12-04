@@ -1,3 +1,7 @@
+import Math;
+
+const WALK_SPEED = 2.5;
+
 class Player : Person {
 
 	field gotoX;
@@ -14,11 +18,20 @@ class Player : Person {
 		this.gotoY = _y - this.height / 2;
 	}
 	
-	function onGameLoop() {
-		base.onGameLoop();
+	function onGameLoop(offX = 0, offY = 0) {
+		base.onGameLoop(offX, offY);
 		if(this.isGoTo) {
-			this.x++;
-			this.y++;
+			distance = ((this.gotoX - this.x) ** 2 + (this.gotoY - this.y) ** 2) ** 0.5;
+			if(distance <= WALK_SPEED / 2)
+				this.isGoTo = false;
+			else {
+				angle = Math.arctan(this.gotoY - this.y, this.gotoX - this.x);
+				stepY = Math.sin(angle) * WALK_SPEED;
+				stepX = Math.cos(angle) * WALK_SPEED;
+				
+				this.x += stepX;
+				this.y += stepY;
+			}
 		}
 	}
 }

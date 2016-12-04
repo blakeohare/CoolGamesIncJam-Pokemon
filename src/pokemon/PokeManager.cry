@@ -1,0 +1,30 @@
+import Graphics2D;
+import ImageResources;
+
+class PokeManager {
+	
+	field list;
+	field names = ["Placeholder"];
+	field sprites_left = ["pokemon/placeholder_left.png"];
+	field sprites_right = ["pokemon/placeholder_right.png"];
+	field icons = ["pokemon/placeholder_sm.png"];
+	field healths = [200];
+
+	constructor() {
+		this.list = [null] * this.names.length;
+		for(i = 0; i < this.names.length; i++) {
+			p = new Pokemon(null);
+			p.name = this.names[i];
+			p.texture_left = GraphicsTexture.load(ImageLoader.loadFromResources(this.sprites_left[i]));
+			p.texture_right = GraphicsTexture.load(ImageLoader.loadFromResources(this.sprites_right[i]));
+			p.icon = GraphicsTexture.load(ImageLoader.loadFromResources(this.icons[i]));
+			p.health = this.healths[i];
+			
+			this.list[i] = p;
+		}
+	}
+	
+	function getPokemon(id) {
+		return new Pokemon(this.list[id]);
+	}
+}

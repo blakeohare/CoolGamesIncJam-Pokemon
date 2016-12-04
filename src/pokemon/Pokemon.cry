@@ -1,0 +1,19 @@
+class Pokemon {
+	
+	field texture_left;
+	field texture_right;
+	field icon;
+	field name;
+	field health;
+	field damage = 0;
+
+	constructor(clone) {
+		if(clone != null) {
+			this.name = clone.name;
+			this.texture_left = clone.texture_left;
+			this.texture_right = clone.texture_right;
+			this.icon = clone.icon;
+			this.health = clone.health;
+		}
+	}
+}
