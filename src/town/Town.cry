@@ -1,8 +1,11 @@
 import Graphics2D;
 import ImageResources;
+import Random;
+import Audio;
 
 const PLAYER_START_X = 30;
 const PLAYER_START_Y = 150;
+const TRANSITION = 70;
 
 class Town {
 	
@@ -14,10 +17,18 @@ class Town {
 	field y = 0;
 	
 	field npc;
+	field npc2;
+	field npc3;
+	field npc4;
+	
+	field wait = 0;
+	field waitNPC;
 	
 	field wasMouseDown = false;
 	
 	field hint;
+	
+	field sound;
 	
 	constructor(mainRef) {
 		this.mainMenu = mainRef;
@@ -27,10 +38,33 @@ class Town {
 		this.player.y = PLAYER_START_Y;
 		this.bg = GraphicsTexture.load(ImageLoader.loadFromResources("town/town.png"));
 		this.hint = GraphicsTexture.load(ImageLoader.loadFromResources("town/hint.png"));
+		this.sound = Audio.SoundResource.loadFromResource("audio/BattleTransition.ogg"); 
 		
-		this.npc = this.mainMenu.npcs[0];
+		rand = Random.randomInt(0, this.mainMenu.npcs.length);
+		this.npc = this.mainMenu.npcs[rand];
 		this.npc.x = 600;
 		this.npc.y = 200;
+		
+		rando = Random.randomInt(0, this.mainMenu.npcs.length);
+		while(rando == rand)
+			rando = Random.randomInt(0, this.mainMenu.npcs.length);
+		this.npc2 = this.mainMenu.npcs[rando];
+		this.npc2.x = 720;
+		this.npc2.y = 500;
+		
+		random1 = Random.randomInt(0, this.mainMenu.npcs.length);
+		while(random1 == rando || random1 == rand)
+			random1 = Random.randomInt(0, this.mainMenu.npcs.length);
+		this.npc3 = this.mainMenu.npcs[random1];
+		this.npc3.x = 1050;
+		this.npc3.y = 600;
+		
+		random2 = Random.randomInt(0, this.mainMenu.npcs.length);
+		while(random2 == random1 || random2 == rando || random2 == rand)
+			random2 = Random.randomInt(0, this.mainMenu.npcs.length);
+		this.npc4 = this.mainMenu.npcs[random2];
+		this.npc4.x = 200;
+		this.npc4.y = 900;
 	}
 	
 	function onGameLoop() {
@@ -45,9 +79,24 @@ class Town {
 		
 		this.bg.draw(this.x, this.y);
 		this.npc.onGameLoop(this.x, this.y);
+		this.npc2.onGameLoop(this.x, this.y);
+		this.npc3.onGameLoop(this.x, this.y);
+		this.npc4.onGameLoop(this.x, this.y);
 		this.player.onGameLoop(this.x, this.y);
-		if(this.player.intersects(this.npc))
-			this.mainMenu.gotoBattle(this.player, this.npc);
+
+		if(this.wait > 0) {
+			this.wait--;
+			if(this.wait <= 0) {
+				this.mainMenu.gotoBattle(this.player, this.waitNPC);
+				this.waitNPC.x = -300;
+				this.waitNPC.y = -300;
+			}
+		} else {
+			this.updateNPC(this.npc);
+			this.updateNPC(this.npc2);
+			this.updateNPC(this.npc3);
+			this.updateNPC(this.npc4);
+		}
 			
 		if(this.hint != null)
 			this.hint.draw(0, WIN_HEIGHT - this.hint.height);
@@ -66,5 +115,13 @@ class Town {
 			this.y = WIN_HEIGHT - this.bg.height;
 		if(this.y > 0)
 			this.y = 0;
+	}
+	
+	function updateNPC(npc) {
+		if(this.player.intersects(npc)) {
+			this.wait = TRANSITION;
+			this.sound.play();
+			this.waitNPC = npc;
+		}
 	}
 }

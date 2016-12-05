@@ -1,12 +1,14 @@
 import Graphics2D;
 import ImageResources;
+import Math;
 
-const CHARACTER_SPACING = 80;
+const CHARACTER_SPACING = 0;
+const CHAR_SCALE = 0.75;
 
 class CharSelect {
 	
 	field title;
-	field characters = ["characters/char1.png", "characters/char2.png"];
+	field characters = ["characters/boy1.png", "characters/boy2.png", "characters/boy3.png", "characters/girl1.png", "characters/girl2.png", "characters/girl3.png"];
 	field charTextures;
 	field buttons;
 	field mainMenu;
@@ -20,7 +22,7 @@ class CharSelect {
 		this.buttons = [null] * this.characters.length;
 		for(i = 0; i < this.characters.length; i++) {
 			this.charTextures[i] = GraphicsTexture.load(ImageLoader.loadFromResources(this.characters[i]));
-			this.buttons[i] = new Button("menu/char_mouse_up.png", "menu/char_mouse_over.png", "menu/char_mouse_down.png", mainRef.mouse);
+			this.buttons[i] = new Button("menu/char_up.png", "menu/char_over.png", "menu/char_down.png", mainRef.mouse, CHAR_SCALE);
 			
 			btn = this.buttons[i];
 			left = WIN_WIDTH / 2 - (this.buttons.length * btn.width + (this.buttons.length - 1) * CHARACTER_SPACING) / 2;
@@ -41,7 +43,7 @@ class CharSelect {
 			if(btn.onClick())
 				this.mainMenu.setPlayer(i);
 			
-			texture = this.charTextures[i];
+			texture = this.charTextures[i].scale(Math.floor(CHAR_SCALE * this.charTextures[i].width), Math.floor(CHAR_SCALE * this.charTextures[i].height));
 			texture.draw(btn.x + btn.width / 2 - texture.width / 2, btn.y + btn.height / 2 - texture.height / 2);
 		}
 	}

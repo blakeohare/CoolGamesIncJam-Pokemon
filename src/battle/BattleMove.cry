@@ -1,0 +1,8 @@
+enum BattleMove {
+	Start,
+	PlayerChoose,
+	PlayerAttack,
+	OtherChoose,
+	OtherAttack,
+	Win
+}

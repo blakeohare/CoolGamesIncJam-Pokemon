@@ -1,5 +1,6 @@
 import Graphics2D;
 import ImageResources;
+import Math;
 
 class Button {
 	field up;
@@ -14,10 +15,15 @@ class Button {
 	
 	field mouseWasDown = false;
 	
-	constructor(upSource, overSource, downSource, mouseRef) {
+	constructor(upSource, overSource, downSource, mouseRef, scale = 1) {
 		this.up = GraphicsTexture.load(ImageLoader.loadFromResources(upSource));
 		this.over = GraphicsTexture.load(ImageLoader.loadFromResources(overSource));
 		this.down = GraphicsTexture.load(ImageLoader.loadFromResources(downSource));
+		if(scale != 1) {
+			this.up = this.up.scale(Math.floor(scale * this.up.width), Math.floor(scale * this.up.height));
+			this.over = this.over.scale(Math.floor(scale * this.over.width), Math.floor(scale * this.over.height));
+			this.down = this.down.scale(Math.floor(scale * this.down.width), Math.floor(scale * this.down.height));
+		}
 		this.width = this.up.width;
 		this.height = this.up.height;
 		this.mouse = mouseRef;

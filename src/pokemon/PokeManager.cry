@@ -4,11 +4,13 @@ import ImageResources;
 class PokeManager {
 	
 	field list;
-	field names = ["Placeholder"];
-	field sprites_left = ["pokemon/placeholder_left.png"];
-	field sprites_right = ["pokemon/placeholder_right.png"];
-	field icons = ["pokemon/placeholder_sm.png"];
-	field healths = [200];
+	field names = ["Pikachu", "Charmander", "Squirtle", "Bulbasaur"];
+	field sprites_left = ["pokemon/pika_left.png", "pokemon/charm_left.png", "pokemon/squirt_left.png", "pokemon/bulb_left.png"];
+	field sprites_right = ["pokemon/pika_right.png", "pokemon/charm_right.png", "pokemon/squirt_right.png", "pokemon/bulb_right.png"];
+	field sprites_left_attack = ["pokemon/pika_left_attack.png", "pokemon/charm_left_attack.png", "pokemon/squirt_left_attack.png", "pokemon/bulb_left_attack.png"];
+	field sprites_right_attack = ["pokemon/pika_right_attack.png", "pokemon/charm_right_attack.png", "pokemon/squirt_right_attack.png", "pokemon/bulb_right_attack.png"];
+	field icons = ["pokemon/pika_sm.png", "pokemon/charm_sm.png", "pokemon/squirt_sm.png", "pokemon/bulb_sm.png"];
+	field healths = [200, 200, 200, 200];
 
 	constructor() {
 		this.list = [null] * this.names.length;
@@ -17,6 +19,8 @@ class PokeManager {
 			p.name = this.names[i];
 			p.texture_left = GraphicsTexture.load(ImageLoader.loadFromResources(this.sprites_left[i]));
 			p.texture_right = GraphicsTexture.load(ImageLoader.loadFromResources(this.sprites_right[i]));
+			p.texture_left_attack = GraphicsTexture.load(ImageLoader.loadFromResources(this.sprites_left_attack[i]));
+			p.texture_right_attack = GraphicsTexture.load(ImageLoader.loadFromResources(this.sprites_right_attack[i]));
 			p.icon = GraphicsTexture.load(ImageLoader.loadFromResources(this.icons[i]));
 			p.health = this.healths[i];
 			

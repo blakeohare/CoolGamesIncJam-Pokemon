@@ -1,6 +1,8 @@
+import Random;
 import Game;
 import Graphics2D;
 import ImageResources;
+import Audio;
 
 const WIN_WIDTH = 960;
 const WIN_HEIGHT = 600;
@@ -25,17 +27,28 @@ class Main{
 	field townScreen;
 	field battleScreen;
 	
+	field splashMusic;
+	field townMusic;
+	field battleMusic;
+	
 	field player;
 	field npcs;
+	
+	field beep;
 	
 	constructor() {
 		this.window = new GameWindow("Grandma's Pokemon", 60, WIN_WIDTH, WIN_HEIGHT);
 		this.mouse = new Mouse();
 		this.pkm = new PokeManager();
+		this.beep = Audio.SoundResource.loadFromResource("audio/MenuSelect.ogg"); 
+		this.splashMusic = Audio.Music.loadFromResource("audio/SplashScreen.ogg"); 
+		this.townMusic = Audio.Music.loadFromResource("audio/WanderMusic.ogg"); 
+		this.battleMusic = Audio.Music.loadFromResource("audio/BattleMusic.ogg"); 
 		
 		this.startMenu = new StartMenu(this);
 		this.currentMenu = this.startMenu;
 		this.characterMenu = new CharSelect(this);
+		this.splashMusic.play();
 	}
 	
 	function onGameLoop() {
@@ -49,14 +62,19 @@ class Main{
 	}
 	
 	function gotoCharSelect() {
+		this.beep.play();
 		this.currentMenu = this.characterMenu;
 	}
 	
 	function gotoTown() {
+		// this.battleMusic.stop();
+		this.townMusic.play();
 		this.currentMenu = this.townScreen;
 	}
 	
 	function gotoBattle(p1, p2) {
+		// this.townMusic.stop();
+		this.battleMusic.play();
 		this.battleScreen = new Battle(p1, p2, this);
 		this.currentMenu = this.battleScreen;
 	}
@@ -71,9 +89,12 @@ class Main{
 				this.npcs[i - 1] = new Person(this.characterMenu.charTextures[i], this.pkm);
 		}
 		this.player = new Player(this.characterMenu.charTextures[id]);
-		this.player.addPokemon(this.pkm.getPokemon(0));
-		this.player.addPokemon(this.pkm.getPokemon(0));
+		this.player.addPokemon(this.pkm.getPokemon(Random.randomInt(0, 4)));
+		this.player.addPokemon(this.pkm.getPokemon(Random.randomInt(0, 4)));
+		this.player.addPokemon(this.pkm.getPokemon(Random.randomInt(0, 4)));
+		this.player.addPokemon(this.pkm.getPokemon(Random.randomInt(0, 4)));
 		this.townScreen = new Town(this);
+		this.beep.play();
 		this.gotoTown();
 	}
 	

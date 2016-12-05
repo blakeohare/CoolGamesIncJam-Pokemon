@@ -1,4 +1,7 @@
-const ATTACK_SPEED = 4;
+import Random;
+
+const ATTACK_SPEED1 = 10;
+const ATTACK_SPEED2 = 20;
 
 class Attack1 : Button {
 
@@ -6,7 +9,7 @@ class Attack1 : Button {
 	field charged = false;
 
 	constructor(upSource, overSource, downSource, mouseRef) : base(upSource, overSource, downSource, mouseRef) {
-		this.mover = new MoveMe(this, ATTACK_SPEED);
+		this.mover = new MoveMe(this, Random.randomInt(ATTACK_SPEED1, ATTACK_SPEED2));
 	}
 	
 	function goto(_x, _y) {

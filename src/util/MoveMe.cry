@@ -8,6 +8,9 @@ class MoveMe {
 	field gotoY;
 	field isGoTo = false;
 	
+	field lessX;
+	field lessY;
+	
 	constructor(myTarget, mySpeed) {
 		this.target = myTarget;
 		this.speed = mySpeed;
@@ -17,12 +20,14 @@ class MoveMe {
 		this.isGoTo = true;
 		this.gotoX = _x - this.target.width / 2;
 		this.gotoY = _y - this.target.height / 2;
+		this.lessX = this.target.x < this.gotoX;
+		this.lessY = this.target.y < this.gotoY;
 	}
 	
 	function onGameLoop() {
 		if(this.isGoTo) {
 			distance = ((this.gotoX - this.target.x) ** 2 + (this.gotoY - this.target.y) ** 2) ** 0.5;
-			if(distance <= this.speed / 2)
+			if(((this.lessX && this.target.x > this.gotoX) || (!this.lessX && this.target.x < this.gotoX)) && ((this.lessY && this.target.y > this.gotoY) || (!this.lessY && this.target.y < this.gotoY)))
 				this.isGoTo = false;
 			else {
 				angle = Math.arctan(this.gotoY - this.target.y, this.gotoX - this.target.x);

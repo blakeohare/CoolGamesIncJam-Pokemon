@@ -1,10 +1,14 @@
 import Graphics2D;
 import ImageResources;
+import Math;
+import Random;
 
 const MAX_POKEMON = 6;
+const TOWN_SCALE = 0.5;
 
 class Person {
 	field texture;
+	field texture_sm;
 	
 	field x;
 	field y;
@@ -18,20 +22,21 @@ class Person {
 	
 	constructor(textureRef, pkm = null) {
 		this.texture = textureRef;
-		this.width = textureRef.width;
-		this.height = textureRef.height;
+		this.texture_sm = textureRef.scale(Math.floor(TOWN_SCALE * textureRef.width), Math.floor(TOWN_SCALE * textureRef.height));
+		this.width = this.texture_sm.width;
+		this.height = this.texture_sm.height;
 		this.pokelist = [null] * MAX_POKEMON;
 		
 		if(pkm != null) {
-			this.addPokemon(pkm.getPokemon(0));
-			this.addPokemon(pkm.getPokemon(0));
-			this.addPokemon(pkm.getPokemon(0));
-			this.addPokemon(pkm.getPokemon(0));
+			this.addPokemon(pkm.getPokemon(Random.randomInt(0, 4)));
+			this.addPokemon(pkm.getPokemon(Random.randomInt(0, 4)));
+			this.addPokemon(pkm.getPokemon(Random.randomInt(0, 4)));
+			this.addPokemon(pkm.getPokemon(Random.randomInt(0, 4)));
 		}
 	}
 	
 	function onGameLoop(offX = 0, offY = 0) {
-		this.texture.draw(this.x + offX, this.y + offY);
+		this.texture_sm.draw(this.x + offX, this.y + offY);
 	}
 	
 	function intersects(other) {
@@ -52,6 +57,18 @@ class Person {
 				if(this.pokecount == 1)
 					this.activePkm = pkm;
 				return;
+			}
+		}
+	}
+	
+	function checkPkm() {
+		if(this.activePkm.isDead()) {
+			for(i = 0; i < this.pokelist.length; i++) {
+				pkm = this.pokelist[i];
+				if(pkm != null && !pkm.isDead()) {
+					this.activePkm = pkm;
+					return;
+				}
 			}
 		}
 	}

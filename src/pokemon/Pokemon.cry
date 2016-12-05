@@ -2,6 +2,8 @@ class Pokemon {
 	
 	field texture_left;
 	field texture_right;
+	field texture_left_attack;
+	field texture_right_attack;
 	field icon;
 	field name;
 	field health;
@@ -12,8 +14,14 @@ class Pokemon {
 			this.name = clone.name;
 			this.texture_left = clone.texture_left;
 			this.texture_right = clone.texture_right;
+			this.texture_left_attack = clone.texture_left_attack;
+			this.texture_right_attack = clone.texture_right_attack;
 			this.icon = clone.icon;
 			this.health = clone.health;
 		}
+	}
+	
+	function isDead() {
+		return this.damage >= this.health;
 	}
 }
